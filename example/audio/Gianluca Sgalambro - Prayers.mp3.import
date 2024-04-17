@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dsarelrb14pdg"
+path="res://.godot/imported/Gianluca Sgalambro - Prayers.mp3-888e59471469989fe1ff850ef81e310a.mp3str"
+
+[deps]
+
+source_file="res://example/audio/Gianluca Sgalambro - Prayers.mp3"
+dest_files=["res://.godot/imported/Gianluca Sgalambro - Prayers.mp3-888e59471469989fe1ff850ef81e310a.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

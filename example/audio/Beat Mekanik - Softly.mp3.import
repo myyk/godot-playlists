@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dl0gmiiknk3ku"
+path="res://.godot/imported/Beat Mekanik - Softly.mp3-c5ff217347fe68546a3f85445b426d75.mp3str"
+
+[deps]
+
+source_file="res://example/audio/Beat Mekanik - Softly.mp3"
+dest_files=["res://.godot/imported/Beat Mekanik - Softly.mp3-c5ff217347fe68546a3f85445b426d75.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
