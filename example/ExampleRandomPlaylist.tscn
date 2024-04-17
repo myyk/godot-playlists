@@ -27,6 +27,7 @@ stream = ExtResource("2_a26km")
 script = ExtResource("2_tdr12")
 directory = "res://example/audio"
 extensions = Array[String]([".mp3"])
+files = Array[String](["res://example/audio/Gianluca Sgalambro - Prayers.mp3", "res://example/audio/Brylie Christopher Oxley - Ethereal Cafe.mp3", "res://example/audio/Beat Mekanik - Softly.mp3", "res://example/audio/Gianluca Sgalambro - Prayers.mp3", "res://example/audio/Beat Mekanik - Softly.mp3", "res://example/audio/Broke For Free - Day Bird.mp3", "res://example/audio/Brylie Christopher Oxley - Ethereal Cafe.mp3", "res://example/audio/Broke For Free - Day Bird.mp3"])
 is_shuffled = true
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
