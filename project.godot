@@ -13,7 +13,7 @@ config_version=5
 config/name="Playlist"
 run/main_scene="res://example/ExampleRandomPlaylist.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
-config/icon="res://icon.jpeg"
+config/icon="res://icon.jpg"
 
 [editor_plugins]
 
