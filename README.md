@@ -29,7 +29,7 @@ Take a look at the small scene in [ExampleRandomPlaylist.tscn](example/ExampleRa
 
 ## Version
 
-Godot Playlist **requires at least Godot 4.2**.
+Godot Playlist **requires at least Godot 4.0**.
 
 ## License
 This project is licensed under the terms of the [MIT license](https://github.com/myyk/godot-playlists/blob/main/LICENSE).
