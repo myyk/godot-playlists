@@ -1,10 +1,16 @@
+# Project specific ignores
+icon.jpg.import
+
 # Godot 4+ specific ignores
 .godot/
 
-# Godot-specific ignores
+# Godot specific ignores
 .import/
 export.cfg
 export_presets.cfg
+
+# gdUnit4 specific ignores
+reports/
 
 # Imported translations (automatically generated from CSV files)
 *.translation

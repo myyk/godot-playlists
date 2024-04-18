@@ -1,5 +1,9 @@
 # Playlists _for Godot 4_
 
+[![License](https://img.shields.io/github/license/myyk/godot-playlists)](https://github.com/myyk/godot-playlists/blob/add-testing/LICENSE)
+[![GitHub release badge](https://badgen.net/github/release/myyk/godot-playlists/stable)](https://github.com/myyk/godot-playlists/releases/latest)
+[![CI/CD](https://github.com/myyk/godot-playlists/actions/workflows/ci.yml/badge.svg)](https://github.com/myyk/godot-playlists/actions/workflows/ci.yml)
+
 Godot Playlists is a small library for loading large sets of resources such as AudioStreams in a way that uses minimal memory. It's useful for playing playlists of songs while only maintaining one song in memory at a time.
 
 You can install it via the Asset Library or [downloading a copy](https://github.com/myyk/godot-playlists/archive/refs/heads/main.zip) from GitHub.
@@ -16,8 +20,8 @@ Either add an `AudioStreamPlaylistPlayer` or `AudioStreamDirectoryPlayer` to you
 
 These settings are on both:
 
-- `is_shuffled` - When set to true, the playback order is shuffled. If there are more than 2 tracks, the same track won't be played twice. There will be no repeats until every track has played once.
-- `continuous_play` - When set to true, it keep playing tracks one after another.
+- `is_shuffled` - Default: false - When set to true, the playback order is shuffled. If there are more than 2 tracks, the same track won't be played twice. There will be no repeats until every track has played once.
+- `continuous_play` - Default: true - When set to true, it keep playing tracks one after another.
 
 ## Example
 
