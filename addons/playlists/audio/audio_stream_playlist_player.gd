@@ -26,6 +26,9 @@ func _ready():
 	finished.connect(_finished_track)
 
 func _reshuffle():
+	if Engine.is_editor_hint():
+		return
+	
 	current_index = 0
 	
 	if is_shuffled:
