@@ -3,35 +3,41 @@ extends Window
 
 signal request_completed(response)
 
-const GdMarkDownReader = preload("res://addons/gdUnit4/src/update/GdMarkDownReader.gd")
-const GdUnitUpdateClient = preload("res://addons/gdUnit4/src/update/GdUnitUpdateClient.gd")
+const GdMarkDownReader = preload("res://addons/playlists/update/GdMarkDownReader.gd")
+const UpdaterUpdateClient = preload("res://addons/playlists/update/UpdaterUpdateClient.gd")
 const spinner_icon := "res://addons/gdUnit4/src/ui/assets/spinner.tres"
 
 @onready var _md_reader :GdMarkDownReader = GdMarkDownReader.new()
-@onready var _update_client :GdUnitUpdateClient = $GdUnitUpdateClient
+@onready var _update_client :UpdaterUpdateClient = $UpdateClient
 @onready var _header :Label = $Panel/GridContainer/PanelContainer/header
 @onready var _update_button :Button = $Panel/GridContainer/Panel/HBoxContainer/update
 @onready var _close_button :Button = $Panel/GridContainer/Panel/HBoxContainer/close
 @onready var _content :RichTextLabel = $Panel/GridContainer/PanelContainer2/ScrollContainer/MarginContainer/content
 
+var plugin :EditorPlugin 
+
 var _debug_mode := false
 
 var _editor_interface :EditorInterface
-var _patcher :GdUnitPatcher = GdUnitPatcher.new()
-var _current_version := GdUnit4Version.current()
+var _patcher :UpdaterPatcher = UpdaterPatcher.new()
+var _current_version := UpdaterVersion.current()
 var _available_versions :Array
 var _download_zip_url :String
 
+const PLUGIN_NAME = "playlists"
+const SECS_BEFORE_STARTING = 5
 
 func _ready():
-	var plugin :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
-	printt("TODO REMOVE THIS1", plugin)
+	_update_client.github_repo = "myyk/godot-playlists"
+	
+	var plugin :EditorPlugin = Engine.get_meta("PlaylistsEditorPlugin")
 	_editor_interface = plugin.get_editor_interface()
 	_update_button.disabled = true
 	_md_reader.set_http_client(_update_client)
 	GdUnitFonts.init_fonts(_content)
 	await request_releases()
 
+	_patcher.base_dir = "res://addons/%s/patches/" % PLUGIN_NAME
 
 func request_releases() -> void:
 	if _debug_mode:
@@ -39,17 +45,19 @@ func request_releases() -> void:
 		await show_update()
 		return
 
-	# wait 20s to allow the editor to initialize itself
-	await Engine.get_main_loop().create_timer(20).timeout
-	var response :GdUnitUpdateClient.HttpResponse = await _update_client.request_latest_version()
+	# wait a bit to allow the editor to initialize itself
+	await Engine.get_main_loop().create_timer(SECS_BEFORE_STARTING).timeout
+	var response :UpdaterUpdateClient.HttpResponse = await _update_client.request_latest_version()
 	if response.code() != 200:
 		push_warning("Update information cannot be retrieved from GitHub! \n %s" % response.response())
 		return
 	var latest_version := extract_latest_version(response)
+	print(response.response())
+	prints(latest_version, "<- latest version, current version ->", _current_version)
 	# if same version exit here no update need
 	if latest_version.is_greater(_current_version):
 		_patcher.scan(_current_version)
-		_header.text = "A new version '%s' is available" % latest_version
+		_header.text = "Current version '%s'. A new version '%s' is available" % [_current_version, latest_version]
 		_download_zip_url = extract_zip_url(response)
 		await show_update()
 
@@ -77,13 +85,13 @@ func _process(_delta):
 func show_update() -> void:
 	message_h4("\n\n\nRequest release infos ... [img=24x24]%s[/img]" % spinner_icon, Color.SNOW)
 	popup_centered_ratio(.5)
-	prints("Scan for GdUnit4 Update ...")
+	prints("Scanning for %s Update ..." % PLUGIN_NAME)
 	var content :String
 	if _debug_mode:
 		var template = FileAccess.open("res://addons/gdUnit4/test/update/resources/markdown.txt", FileAccess.READ).get_as_text()
 		content = await _md_reader.to_bbcode(template)
 	else:
-		var response :GdUnitUpdateClient.HttpResponse = await _update_client.request_releases()
+		var response :UpdaterUpdateClient.HttpResponse = await _update_client.request_releases()
 		if response.code() == 200:
 			content = await extract_releases(response, _current_version)
 		else:
@@ -97,21 +105,21 @@ func show_update() -> void:
 	_update_button.set_disabled(false)
 
 
-static func extract_latest_version(response :GdUnitUpdateClient.HttpResponse) -> GdUnit4Version:
+static func extract_latest_version(response :UpdaterUpdateClient.HttpResponse) -> UpdaterVersion:
 	var body :Array = response.response()
-	return GdUnit4Version.parse(body[0]["name"])
+	return UpdaterVersion.parse(body[0]["name"])
 
 
-static func extract_zip_url(response :GdUnitUpdateClient.HttpResponse) -> String:
+static func extract_zip_url(response :UpdaterUpdateClient.HttpResponse) -> String:
 	var body :Array = response.response()
 	return body[0]["zipball_url"]
 
 
-func extract_releases(response :GdUnitUpdateClient.HttpResponse, current_version) -> String:
+func extract_releases(response :UpdaterUpdateClient.HttpResponse, current_version) -> String:
 	await get_tree().process_frame
 	var result := ""
 	for release in response.response():
-		if GdUnit4Version.parse(release["tag_name"]).equals(current_version):
+		if UpdaterVersion.parse(release["tag_name"]).equals(current_version):
 			break
 		var release_description :String = release["body"]
 		result += await _md_reader.to_bbcode(release_description)
@@ -147,14 +155,14 @@ func _on_update_pressed():
 		ScriptEditorControls.close_open_editor_scripts()
 	# copy update source to a temp because the update is deleting the whole gdUnit folder
 	DirAccess.make_dir_absolute("res://addons/.gdunit_update")
-	DirAccess.copy_absolute("res://addons/gdUnit4/src/update/GdUnitUpdate.tscn", "res://addons/.gdunit_update/GdUnitUpdate.tscn")
-	DirAccess.copy_absolute("res://addons/gdUnit4/src/update/GdUnitUpdate.gd", "res://addons/.gdunit_update/GdUnitUpdate.gd")
-	var source := FileAccess.open("res://addons/gdUnit4/src/update/GdUnitUpdate.tscn", FileAccess.READ)
-	var content := source.get_as_text().replace("res://addons/gdUnit4/src/update/GdUnitUpdate.gd", "res://addons/.gdunit_update/GdUnitUpdate.gd")
-	var dest := FileAccess.open("res://addons/.gdunit_update/GdUnitUpdate.tscn", FileAccess.WRITE)
+	DirAccess.copy_absolute("res://addons/gdUnit4/src/update/UpdaterUpdate.tscn", "res://addons/.gdunit_update/UpdaterUpdate.tscn")
+	DirAccess.copy_absolute("res://addons/gdUnit4/src/update/UpdaterUpdate.gd", "res://addons/.gdunit_update/UpdaterUpdate.gd")
+	var source := FileAccess.open("res://addons/gdUnit4/src/update/UpdaterUpdate.tscn", FileAccess.READ)
+	var content := source.get_as_text().replace("res://addons/gdUnit4/src/update/UpdaterUpdate.gd", "res://addons/.gdunit_update/UpdaterUpdate.gd")
+	var dest := FileAccess.open("res://addons/.gdunit_update/UpdaterUpdate.tscn", FileAccess.WRITE)
 	dest.store_string(content)
 	hide()
-	var update = load("res://addons/.gdunit_update/GdUnitUpdate.tscn").instantiate()
+	var update = load("res://addons/.gdunit_update/UpdaterUpdate.tscn").instantiate()
 	update.setup(_editor_interface, _update_client, _download_zip_url)
 	Engine.get_main_loop().root.add_child(update)
 	update.popup_centered()

@@ -11,6 +11,7 @@ export_presets.cfg
 
 # gdUnit4 specific ignores
 reports/
+addons/gdUnit4/tmp-update/
 
 # Imported translations (automatically generated from CSV files)
 *.translation
