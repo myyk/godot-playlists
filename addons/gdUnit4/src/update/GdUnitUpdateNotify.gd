@@ -25,7 +25,6 @@ var _download_zip_url :String
 
 func _ready():
 	var plugin :EditorPlugin = Engine.get_meta("GdUnitEditorPlugin")
-	printt("TODO REMOVE THIS1", plugin)
 	_editor_interface = plugin.get_editor_interface()
 	_update_button.disabled = true
 	_md_reader.set_http_client(_update_client)

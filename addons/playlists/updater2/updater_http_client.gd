@@ -1,7 +1,11 @@
 @tool
 extends Node
 
+## Credits: Mostly copied from https://github.com/MikeSchulze/gdUnit4/blob/99b7c323f443e5fcc67f9a79b4df532727e8986f/addons/gdUnit4/src/update/GdUnitUpdateClient.gd
+
 signal request_completed(response)
+
+@export var github_repo = ""
 
 class HttpResponse:
 	var _code :int
@@ -24,7 +28,6 @@ class HttpResponse:
 		return _body
 
 var _http_request :HTTPRequest = HTTPRequest.new()
-var github_repo = ""
 
 func _ready():
 	add_child(_http_request)
