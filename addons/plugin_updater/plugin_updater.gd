@@ -4,11 +4,19 @@ extends EditorPlugin
 const UpdaterConfig = preload("res://addons/plugin_updater/core/updater_config.gd")
 
 func _enter_tree():
-	var config = UpdaterConfig.get_user_config()
+	var config = UpdaterConfig.get_repo_config()
 	_install_to_plugin(config.plugin_name)
 
+	# Add auto-update functionality for plugin_updater itself (not the plugin being updated, that needs similar code)
+	if Engine.is_editor_hint():
+		Engine.set_meta("PluginUpdaterEditorPlugin", self)
+		var update_tool: Node = load("download_update_panel.tscn").instantiate()
+		Engine.get_main_loop().root.call_deferred("add_child", update_tool)
+
 func _exit_tree():
-	pass
+	if Engine.has_meta("PluginUpdaterEditorPlugin"):
+		Engine.remove_meta("PluginUpdaterEditorPlugin")
+
 
 func _install_to_plugin(plugin_name: String):
 	var err: Error = OK
@@ -25,10 +33,15 @@ func _install_to_plugin(plugin_name: String):
 	if err != OK:
 		push_error("plugin_updater: error making directory, error = " + str(err))
 
-	#err = DirAccess.copy_absolute(source_path, target_path)
 	err = _recursive_copy(source_path, target_path)
 	if err != OK:
 		push_error("plugin_updater: error copying files, error = " + str(err))
+
+	# Copy the config over
+	err = DirAccess.copy_absolute(UpdaterConfig.PLUGIN_MAKER_CONFIG_PATH, UpdaterConfig.PLUGIN_USER_CONFIG_PATH_FORMAT % plugin_name)
+	if err != OK:
+		push_error("plugin_updater: error copying config file, error = " + str(err))
+
 
 func _recursive_copy(from: String, to: String, chmod_flags: int = -1) -> Error:
 	var from_dir = DirAccess.open(from)
