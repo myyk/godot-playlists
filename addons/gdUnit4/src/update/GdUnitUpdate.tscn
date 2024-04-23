@@ -1,9 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://2eahgaw88y6q"]
 
 [ext_resource type="Script" path="res://addons/gdUnit4/src/update/GdUnitUpdate.gd" id="1"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_fw0ti"]
-load_path = "res://.godot/imported/progress-background.png-f3310a953d3211b4808b566bfd5fdc54.ctex"
+[ext_resource type="Texture2D" uid="uid://cwxuep3lbnu3p" path="res://addons/gdUnit4/src/update/assets/progress-background.png" id="2_q6rkd"]
 
 [node name="GdUnitUpdate" type="ConfirmationDialog"]
 disable_3d = true
@@ -70,7 +68,7 @@ max_value = 5.0
 value = 1.0
 rounded = true
 nine_patch_stretch = true
-texture_progress = SubResource("CompressedTexture2D_fw0ti")
+texture_progress = ExtResource("2_q6rkd")
 texture_progress_offset = Vector2(0, 2)
 
 [connection signal="confirmed" from="." to="." method="_on_confirmed"]

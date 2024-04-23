@@ -39,7 +39,7 @@ func request_releases() -> void:
 		return
 
 	# wait 20s to allow the editor to initialize itself
-	await Engine.get_main_loop().create_timer(20).timeout
+	await get_tree().create_timer(20).timeout
 	var response :GdUnitUpdateClient.HttpResponse = await _update_client.request_latest_version()
 	if response.code() != 200:
 		push_warning("Update information cannot be retrieved from GitHub! \n %s" % response.response())
@@ -128,7 +128,7 @@ func rescan() -> void:
 				progressBar(fs.get_scanning_progress() * 100 as int)
 			await Engine.get_main_loop().process_frame
 		await Engine.get_main_loop().process_frame
-	await Engine.get_main_loop().create_timer(1).timeout
+	await get_tree().create_timer(1).timeout
 
 
 func progressBar(p_progress :int, p_color :Color = Color.POWDER_BLUE):
