@@ -10,11 +10,9 @@ func _enter_tree():
 
 	# Add auto-update functionality for plugin_updater itself (not the plugin being updated, that needs similar code)
 	if Engine.is_editor_hint():
-		_install_to_plugin('plugin_updater')
 		Engine.set_meta("PluginUpdaterEditorPlugin", self)
-		var update_tool: Node = load("res://addons/plugin_updater/core/download_update_panel.tscn").instantiate()
+		var update_tool: Node = load("res://addons/plugin_updater/generated/updater/download_update_panel.tscn").instantiate()
 		Engine.get_main_loop().root.call_deferred("add_child", update_tool)
-		update_tool.updated.connect(func(): _install_to_plugin('plugin_updater'))
 
 func _exit_tree():
 	if Engine.has_meta("PluginUpdaterEditorPlugin"):
@@ -45,6 +43,8 @@ func _install_to_plugin(plugin_name: String):
 	if err != OK:
 		push_error("plugin_updater: error copying config file, error = " + str(err))
 
+	# Copy in plugin name so we can use relative paths
+	replace_string_in_file(target_path + "updater_config.gd", "PLUGIN_NAME_PLACEHOLDER", plugin_name)
 
 func _recursive_copy(from: String, to: String, chmod_flags: int = -1) -> Error:
 	var from_dir = DirAccess.open(from)
@@ -72,3 +72,9 @@ func _recursive_copy(from: String, to: String, chmod_flags: int = -1) -> Error:
 		return OK
 	else:
 		return from_dir.get_open_error()
+
+func replace_string_in_file(file_path: String, old_string: String, new_string: String) -> void:
+	var source := FileAccess.open(file_path, FileAccess.READ)
+	var content := source.get_as_text().replace(old_string, new_string)
+	var dest := FileAccess.open(file_path, FileAccess.WRITE)
+	dest.store_string(content)

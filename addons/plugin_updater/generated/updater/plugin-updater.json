@@ -1,5 +1,6 @@
 {
-	"plugin_name": "playlists",
-	"github_repo": "myyk/godot-playlists",
-	"editor_plugin_meta": "PlaylistsEditorPlugin"
+	"plugin_name": "plugin_updater",
+	"secs_before_check_for_update": 5,
+	"github_repo": "myyk/godot-plugin-updater",
+	"editor_plugin_meta": "PluginUpdaterEditorPlugin"
 }
