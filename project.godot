@@ -19,6 +19,10 @@ config/icon="res://icon.jpg"
 
 enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg", "res://addons/playlists/plugin.cfg", "res://addons/plugin_updater/plugin.cfg")
 
+[gdunit4]
+
+settings/common/update_notification_enabled=false
+
 [rendering]
 
 renderer/rendering_method="mobile"
