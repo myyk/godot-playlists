@@ -3,6 +3,7 @@
 [![License](https://img.shields.io/github/license/myyk/godot-playlists)](https://github.com/myyk/godot-playlists/blob/add-testing/LICENSE)
 [![GitHub release badge](https://badgen.net/github/release/myyk/godot-playlists/stable)](https://github.com/myyk/godot-playlists/releases/latest)
 [![CI/CD](https://github.com/myyk/godot-playlists/actions/workflows/ci.yml/badge.svg)](https://github.com/myyk/godot-playlists/actions/workflows/ci.yml)
+[![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/myyk/godot-playlists)](https://img.shields.io/github/languages/code-size/myyk/godot-playlists)
 
 Godot Playlists is a small library for loading large sets of resources such as AudioStreams in a way that uses minimal memory. It's useful for playing playlists of songs while only maintaining one song in memory at a time.
 
