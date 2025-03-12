@@ -25,6 +25,15 @@ var current_index: int
 func _ready():
 	finished.connect(_finished_track)
 
+func _notification(what):
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		print("Waiting to stop the stream...")
+		stop()
+		if stream:
+			stream = null
+		await get_tree().create_timer(0.2).timeout
+		get_tree().quit() # default behavior
+
 func _reshuffle():
 	if Engine.is_editor_hint():
 		return
